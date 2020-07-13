@@ -41,19 +41,24 @@ var svg = d3.select("svg"),
 
 var netCount = d3.map();
 var netChange = d3.map();
-
+var rig2014 = d3.map();
+console.log(rig2014)
 var tip = d3.tip()
     .attr("class", "d3-tip")
     .html(function(d) {
+
       return "Basin: " + d.properties.display_name  +
+      "<br>Jan 3, 2014: " + rig2014.get(d.properties.display_name) +
       "<br>Current total: " + netCount.get(d.properties.display_name) +
       "<br>Weekly change: " + netChange.get(d.properties.display_name);
-      });
+      console.log(netCount.get(d.properties.display_name))
+    });
 
 svg.call(tip);
 
 d3.queue()
   .defer(d3.json, "us_basins.json")
+  .defer(d3.csv, "rig2014.csv", function(d) { return rig2014.set(d.basin, +d.value); })
   .defer(d3.csv, "netCount.csv", function(d) { return netCount.set(d.basin, +d.value); })
   .defer(d3.csv, "netChange.csv", function(d) { return netChange.set(d.basin, +d.change_1wk); })
   .await(ready);
