@@ -27,7 +27,7 @@ h1, h2 {
 
 <div class="text-things">
     <h1>US Weekly Oil and Gas Rig Count</h1>
-    <h2>July 2, 2020</h2>    
+    <h2>July 10, 2020</h2>    
 </div>
 
 <svg width="960" height="550"></svg>
@@ -39,28 +39,31 @@ var svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height");
 
-var netCount = d3.map();
+var rigJuly2020 = d3.map();
 var netChange = d3.map();
-var rig2014 = d3.map();
-console.log(rig2014)
+var rig2020 = d3.map()
+
+//var rig2020 = d3.csv("rig2020.csv");
+// console.log("Look HERE1:", netChange)
+// console.log("Look HERE2:", rig2020)
 var tip = d3.tip()
     .attr("class", "d3-tip")
     .html(function(d) {
-
+      //console.log(d)
       return "Basin: " + d.properties.display_name  +
-      "<br>Jan 3, 2014: " + rig2014.get(d.properties.display_name) +
-      "<br>Current total: " + netCount.get(d.properties.display_name) +
-      "<br>Weekly change: " + netChange.get(d.properties.display_name);
-      console.log(netCount.get(d.properties.display_name))
+      "<br>Jan 3, 2020: " + rig2020.get(d.properties.display_name) +
+      "<br>July 10, 2020: " + rigJuly2020.get(d.properties.display_name) +
+      "<br>YTD change: " + netChange.get(d.properties.display_name);
+      console.log("ANother Look Here",rigJuly2020)
     });
 
 svg.call(tip);
 
 d3.queue()
   .defer(d3.json, "us_basins.json")
-  .defer(d3.csv, "rig2014.csv", function(d) { return rig2014.set(d.basin, +d.value); })
-  .defer(d3.csv, "netCount.csv", function(d) { return netCount.set(d.basin, +d.value); })
-  .defer(d3.csv, "netChange.csv", function(d) { return netChange.set(d.basin, +d.change_1wk); })
+  .defer(d3.csv, "rig2020.csv", function(d) { return rig2020.set(d.basin, +d.value); })
+  .defer(d3.csv, "rigJuly2020.csv", function(d) { return rigJuly2020.set(d.basin, +d.value); })
+  .defer(d3.csv, "netChange.csv", function(d) { return netChange.set(d.basin, +d.change_YTD); })
   .await(ready);
 
 function ready(error, data) {
